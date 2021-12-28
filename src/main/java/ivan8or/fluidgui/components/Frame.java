@@ -1,6 +1,5 @@
 package ivan8or.fluidgui.components;
 
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -13,6 +12,7 @@ public class Frame {
     private final String itemID;
     private final int slot;
     private final int delay;
+
 
     public Frame(ItemStack item, int slot, String itemID, int delay, NamespacedKey key) {
         if (item == null)

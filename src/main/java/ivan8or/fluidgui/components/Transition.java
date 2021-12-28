@@ -43,6 +43,7 @@ public class Transition {
             this.compiler = new FrameAnimator();
     }
 
+    // run the task associated with this transition (sync or async)
     private void callTask() {
         if (task == null)
             return;
