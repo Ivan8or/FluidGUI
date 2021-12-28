@@ -69,14 +69,14 @@ public class Transition {
         callTask();
 
         // start displaying the constant frames to the user
-        new FramingBukkitRunnable(constantFrames, inv, useDelay)
+        new FrameLayerRunnable(constantFrames, inv, useDelay)
                 .runTaskTimer(plugin, 0, 1);
 
         // start generating the dynamic frames to be shown after the constant frames run out
         Future<List<Frame>> dynamicFrames = executor.submit(() -> compiler.compile(context));
 
         // display the dynamic frames after the constant frames run out
-        new FramingBukkitRunnable(dynamicFrames.get(), inv, useDelay)
+        new FrameLayerRunnable(dynamicFrames.get(), inv, useDelay)
                 .runTaskTimer(plugin, constantDelay, 1);
 
         // return the total delay of the transition
@@ -99,33 +99,4 @@ public class Transition {
         return targetSlideName;
     }
 
-
-    public class FramingBukkitRunnable extends BukkitRunnable {
-
-        private int runningFrameDelay = 0;
-
-        final private List<Frame> clonedFrames = new LinkedList<>();
-        private final boolean useDelay;
-        private final Inventory drawTo;
-
-        public FramingBukkitRunnable(List<Frame> originalFrames, Inventory drawTo, boolean useDelay) {
-            clonedFrames.addAll(originalFrames);
-            this.useDelay = useDelay;
-            this.drawTo = drawTo;
-        }
-
-        @Override
-        public void run() {
-            while (!clonedFrames.isEmpty() && (useDelay || runningFrameDelay == 0)) {
-                Frame to_draw = clonedFrames.remove(0);
-                to_draw.draw(drawTo);
-                if (!useDelay && !clonedFrames.isEmpty())
-                    runningFrameDelay = clonedFrames.get(0).getDelay();
-            }
-            if (clonedFrames.isEmpty())
-                this.cancel();
-            else
-                runningFrameDelay--;
-        }
-    }
 }

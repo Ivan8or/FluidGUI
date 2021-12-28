@@ -1,7 +1,8 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id 'java'
+    id 'java-library'
+    id 'maven-publish'
 }
 
 group = 'ivan8or.fluidgui'
@@ -25,5 +26,28 @@ compileOnly 'org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT' }
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         filter ReplaceTokens, tokens: [version: version]
+    }
+}
+
+java {
+    withJavadocJar()
+}
+
+
+publishing {
+    publications {
+        fluidgui(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = "umbcraft-pub"
+            url = "https://nexus.umbcraft.online/repository/umbcraft-pub/"
+            credentials {
+                username = "$usr"
+                password = "$pwd"
+            }
+        }
     }
 }
