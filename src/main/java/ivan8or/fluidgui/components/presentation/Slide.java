@@ -1,5 +1,6 @@
-package ivan8or.fluidgui.components;
+package ivan8or.fluidgui.components.presentation;
 
+import ivan8or.fluidgui.components.transition.Transition;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 
@@ -27,10 +28,6 @@ public class Slide {
 
     public void addTransition(String itemID, Transition response) {
         transitions.put(itemID, response);
-    }
-
-    public int getStaticTime(String itemID) {
-        return transitions.get(itemID).getConstantDelay();
     }
 
     public String resultSlide(String itemID) {

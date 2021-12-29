@@ -1,99 +1,96 @@
-package ivan8or.fluidgui.components;
+package ivan8or.fluidgui.components.transition;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
+import java.util.Objects;
+import java.util.OptionalInt;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class Transition {
 
+    // shared thread pool to run async actions
     protected static final ExecutorService executor = Executors.newCachedThreadPool();
 
+    // the slide this transition points to
     private final String targetSlideName;
+
+    // the unchanging, constant frames provided to this transition
     private final List<Frame> constantFrames;
-    private final FrameAnimator compiler;
-    protected GUICallable task;
-    private final int constantDelay;
+
+    // an animator to produce on-the-spot dynamic frames for the transition
+    private final TransitionAnimator compiler;
+
+    // a runnable action which this transition calls when it is invoked
+    protected TransitionAction<Void> task;
 
     // create a new transition for a slide, with no task to run and with no dynamic frames
     public Transition(String slide_id_into, List<Frame> frames) {
         this.targetSlideName = slide_id_into;
         this.constantFrames = frames;
-        this.compiler = new FrameAnimator();
-        constantDelay = getDelay(constantFrames);
+        this.compiler = new TransitionAnimator();
     }
 
     // create a new transition for a slide, with a parameter for a task tor un and for dynamic frames
-    public Transition(String slide_id_into, List<Frame> frames, GUICallable task, FrameAnimator compiler) {
+    public Transition(String slide_id_into, List<Frame> frames, TransitionAction<Void> task, TransitionAnimator compiler) {
         this.targetSlideName = slide_id_into;
         this.constantFrames = frames;
         this.task = task;
-        constantDelay = getDelay(constantFrames);
-
-        if (compiler != null)
-            this.compiler = compiler;
-        else
-            this.compiler = new FrameAnimator();
+        this.compiler = Objects.requireNonNullElseGet(compiler, TransitionAnimator::new);
     }
 
     // run the task associated with this transition (sync or async)
-    private void callTask() {
+    private void runAction() throws Exception {
         if (task == null)
             return;
 
-        if (task.synchronous()) {
-            try {
-                task.call();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
+        if (task.synchronous())
+            task.call();
+        else
             executor.submit(task);
-        }
-
     }
+
 
     // starts the transition process to the new slide
     // replaces the current item frames for new ones the new slide will contain
     // 'useDelay' parameter decides if the specified frame delays are to be floolwed or ignored
     public int start(Inventory inv, Map<String, Object> context, boolean useDelay, Plugin plugin)
-            throws ExecutionException, InterruptedException {
+            throws Exception {
 
         // run the GUICallable if one exists
-        callTask();
+        runAction();
 
         // start displaying the constant frames to the user
-        new FrameLayerRunnable(constantFrames, inv, useDelay)
+        new TransitionRunner(constantFrames, inv, useDelay)
                 .runTaskTimer(plugin, 0, 1);
 
         // start generating the dynamic frames to be shown after the constant frames run out
         Future<List<Frame>> dynamicFrames = executor.submit(() -> compiler.compile(context));
+        int constantsDelay = getDelay(constantFrames);
 
         // display the dynamic frames after the constant frames run out
-        new FrameLayerRunnable(dynamicFrames.get(), inv, useDelay)
-                .runTaskTimer(plugin, constantDelay, 1);
+        new TransitionRunner(dynamicFrames.get(), inv, useDelay)
+                .runTaskTimer(plugin, constantsDelay, 1);
+
+        int dynamicsDelay = getDelay(dynamicFrames.get());
 
         // return the total delay of the transition
-        return constantDelay + getDelay(dynamicFrames.get());
+        return constantsDelay + dynamicsDelay;
     }
 
-    public int getConstantDelay() {
-        return constantDelay;
-    }
+    // gets the total delay for a sequence of frames
     private int getDelay(List<Frame> frames) {
+        OptionalInt oint = frames.stream()
+                .mapToInt(Frame::getDelay) // get delay from each frame
+                .reduce(Integer::sum); // sum up all of the delays
 
-        int result = 0;
-        for (Frame f : frames)
-            result += f.getDelay();
-
-        return result;
+        if (oint.isPresent())
+            return oint.getAsInt();
+        return 0;
     }
 
     public String getEndID() {

@@ -1,14 +1,12 @@
-package ivan8or.fluidgui.components;
+package ivan8or.fluidgui.components.transition;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class FrameAnimator {
+public class TransitionAnimator {
 
-    FrameAnimator next;
-
-
+    TransitionAnimator next;
 
     public final List<Frame> compile(Map<String,Object> context) {
 
@@ -23,7 +21,7 @@ public class FrameAnimator {
         return toReturn;
     }
 
-    public final void chainAnimator(FrameAnimator animator) {
+    public final void chainAnimator(TransitionAnimator animator) {
         next = animator;
     }
 

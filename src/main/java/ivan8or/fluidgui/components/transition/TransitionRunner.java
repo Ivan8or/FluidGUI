@@ -1,4 +1,4 @@
-package ivan8or.fluidgui.components;
+package ivan8or.fluidgui.components.transition;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -6,7 +6,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FrameLayerRunnable extends BukkitRunnable {
+public class TransitionRunner extends BukkitRunnable {
 
     private int runningFrameDelay = 0;
 
@@ -14,7 +14,7 @@ public class FrameLayerRunnable extends BukkitRunnable {
     private final boolean useDelay;
     private final Inventory drawTo;
 
-    public FrameLayerRunnable(List<Frame> originalFrames, Inventory drawTo, boolean useDelay) {
+    public TransitionRunner(List<Frame> originalFrames, Inventory drawTo, boolean useDelay) {
         clonedFrames.addAll(originalFrames);
         this.useDelay = useDelay;
         this.drawTo = drawTo;

@@ -1,4 +1,4 @@
-package ivan8or.fluidgui.components;
+package ivan8or.fluidgui.components.presentation;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -11,15 +11,17 @@ import java.util.Map;
 
 public class Presentation {
 
-    private final String HEAD_NAME = "__head__";
-    private final String HEAD_ITEM_ID = "loopback";
+    public final String HEAD_NAME = "__head__";
+    public final String INIT_ITEM_ID = "init";
 
     private final Plugin plugin;
 
     private final Map<String, Slide> slides;
+    private Slide current;
+
     private final Inventory inv;
     private final Map<String, Object> context;
-    private Slide current;
+
     private boolean transitioning = false;
 
     public Presentation(Plugin plugin, String title) {
@@ -42,10 +44,12 @@ public class Presentation {
         return context;
     }
 
+    // respond to the provided item ID
     public void transition(String itemID) {
 
         if (transitioning)
             return;
+
         if (current == null || !current.hasResponse(itemID))
             return;
 
@@ -64,6 +68,6 @@ public class Presentation {
     public void start(Player p) {
         current = slides.get(HEAD_NAME);
         p.openInventory(inv);
-        transition(HEAD_ITEM_ID);
+        transition(INIT_ITEM_ID);
     }
 }
