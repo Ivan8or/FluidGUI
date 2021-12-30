@@ -21,24 +21,19 @@ public class Slide {
         return slideName;
     }
 
-    public boolean hasResponse(String itemID) {
-
-        return transitions.containsKey(itemID);
+    public boolean hasResponse(String goalSlide) {
+        return transitions.containsKey(goalSlide);
     }
 
-    public void addTransition(String itemID, Transition response) {
-        transitions.put(itemID, response);
-    }
-
-    public String resultSlide(String itemID) {
-        return transitions.get(itemID).getEndID();
+    public void addTransition(Transition response) {
+        transitions.put(response.getEndSlide(), response);
     }
 
     // starts the transition to another slide
     // returns the total time it will take for the transition
-    public int start(String itemID, Inventory inv, Map<String, Object> context, Plugin plugin) {
+    public int start(String goalSlide, Inventory inv, Map<String, Object> context, Plugin plugin) {
         try {
-            return transitions.get(itemID).start(inv, context, false, plugin);
+            return transitions.get(goalSlide).start(inv, context, false, plugin);
         } catch (Exception e) {
             e.printStackTrace();
         }

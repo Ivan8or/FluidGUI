@@ -29,15 +29,15 @@ public class Transition {
     protected TransitionAction<Void> task;
 
     // create a new transition for a slide, with no task to run and with no dynamic frames
-    public Transition(String slide_id_into, List<Frame> frames) {
-        this.targetSlideName = slide_id_into;
+    public Transition(String goalSlide, List<Frame> frames) {
+        this.targetSlideName = goalSlide;
         this.constantFrames = frames;
         this.compiler = new TransitionAnimator();
     }
 
     // create a new transition for a slide, with a parameter for a task tor un and for dynamic frames
-    public Transition(String slide_id_into, List<Frame> frames, TransitionAction<Void> task, TransitionAnimator compiler) {
-        this.targetSlideName = slide_id_into;
+    public Transition(String slideInto, List<Frame> frames, TransitionAction<Void> task, TransitionAnimator compiler) {
+        this.targetSlideName = slideInto;
         this.constantFrames = frames;
         this.task = task;
         this.compiler = Objects.requireNonNullElseGet(compiler, TransitionAnimator::new);
@@ -93,7 +93,7 @@ public class Transition {
         return 0;
     }
 
-    public String getEndID() {
+    public String getEndSlide() {
         return targetSlideName;
     }
 

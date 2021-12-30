@@ -9,16 +9,16 @@ import org.bukkit.persistence.PersistentDataType;
 public class Frame {
 
     private final ItemStack item;
-    private final String itemID;
+    private final String goalSlide;
     private final int slot;
     private final int delay;
 
 
-    public Frame(ItemStack item, int slot, String itemID, int delay, NamespacedKey key) {
+    public Frame(ItemStack item, int slot, String goalSlide, int delay, NamespacedKey key) {
         if (item == null)
             throw new NullPointerException("itemstack is null!");
-        if (itemID == null)
-            throw new NullPointerException("item ID is null!");
+        if (goalSlide == null)
+            throw new NullPointerException("goal slide is null!");
         if (key == null)
             throw new NullPointerException("key is null!");
 
@@ -26,13 +26,13 @@ public class Frame {
         if (itemMeta != null) {
 
             // set the item's id to its persistent metadata for later retrieval
-            itemMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, itemID);
+            itemMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, goalSlide);
             item.setItemMeta(itemMeta);
         }
 
         this.item = item;
         this.slot = slot;
-        this.itemID = itemID;
+        this.goalSlide = goalSlide;
         this.delay = delay;
     }
 
@@ -40,14 +40,14 @@ public class Frame {
         this.item = other.item.clone();
         this.slot = other.slot;
         this.delay = other.delay;
-        this.itemID = other.itemID;
+        this.goalSlide = other.goalSlide;
     }
 
     public int getDelay() {
         return delay;
     }
     public String getID() {
-        return itemID;
+        return goalSlide;
     }
     public void draw(Inventory inv) {
         inv.setItem(slot, item);

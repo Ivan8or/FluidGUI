@@ -6,12 +6,12 @@ import java.util.concurrent.Callable;
 
 public abstract class TransitionAction<T> implements Callable<T> {
 
-    protected UUID player_uuid;
+    protected UUID playerUUID;
     protected Map<String, Object> context;
     protected boolean synchronous;
 
     public TransitionAction(UUID uuid, Map<String,Object> context, boolean synchronous) {
-        this.player_uuid = uuid;
+        this.playerUUID = uuid;
         this.context = context;
         this.synchronous = synchronous;
     }

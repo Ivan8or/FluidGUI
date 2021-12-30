@@ -12,7 +12,6 @@ import java.util.Map;
 public class Presentation {
 
     public final String HEAD_NAME = "__head__";
-    public final String INIT_ITEM_ID = "init";
 
     private final Plugin plugin;
 
@@ -44,23 +43,22 @@ public class Presentation {
         return context;
     }
 
-    // respond to the provided item ID
-    public void transition(String itemID) {
+    // transition to the goal slide
+    public void transition(String goalSlide) {
 
         if (transitioning)
             return;
 
-        if (current == null || !current.hasResponse(itemID))
+        if (current == null || !current.hasResponse(goalSlide))
             return;
 
         transitioning = true;
-        int totalLength = current.start(itemID, inv, context, plugin);
+        int totalLength = current.start(goalSlide, inv, context, plugin);
 
         new BukkitRunnable() {
             public void run() {
                 transitioning = false;
-                String newSlide = current.resultSlide(itemID);
-                setCurrentSlide(newSlide);
+                setCurrentSlide(goalSlide);
             }
         }.runTaskLater(plugin, totalLength+1);
     }
@@ -68,6 +66,6 @@ public class Presentation {
     public void start(Player p) {
         current = slides.get(HEAD_NAME);
         p.openInventory(inv);
-        transition(INIT_ITEM_ID);
+        transition(HEAD_NAME);
     }
 }
