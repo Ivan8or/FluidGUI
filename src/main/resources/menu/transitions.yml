@@ -1,0 +1,46 @@
+
+transitions:
+
+  initialSlideName: "__head__"
+  initialItemID: "init"
+
+
+#######
+# all __head__ transitions
+#######
+  __head__:
+
+# transition for '__head__' -> '__head__' (initial transition)
+    __head__:
+      onItemId: "init"
+      frames:
+        - type: "alias"
+          contents:
+            alias: "cleartomain"
+
+# transition for '__head__' -> 'settings'
+    settings:
+      onItemId: "to_settings"
+      frames:
+        - type: "item"
+          contents:
+            - item: "arrow"
+              item-name: "Back to menu"
+              id: "back"
+              slot: 53
+              delay: 0
+
+#######
+# all settings transitions
+#######
+  settings:
+
+  # transition for: 'settings' -> '__head__'
+    __head__:
+      onItemId: "back"
+      frames:
+        - type: "alias"
+          contents:
+            alias: "cleartomain"
+
+
