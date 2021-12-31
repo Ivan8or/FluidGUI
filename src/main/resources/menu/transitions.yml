@@ -1,8 +1,6 @@
-
 transitions:
-
   initialSlideName: "__head__"
-  initialItemID: "init"
+  ignoreName: "__ignore__"
 
 
 #######
@@ -26,7 +24,7 @@ transitions:
           contents:
             - item: "arrow"
               item-name: "Back to menu"
-              id: "back"
+              target: "back"
               slot: 53
               delay: 0
 
