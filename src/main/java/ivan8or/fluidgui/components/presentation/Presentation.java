@@ -11,8 +11,8 @@ import java.util.Map;
 
 public class Presentation {
 
-    public final String HEAD_NAME = "__head__";
-
+    public final static String HEAD_NAME = "__head__";
+    public final static String IGNORE_NAME = "__ignore__";
     private final Plugin plugin;
 
     private final Map<String, Slide> slides;
@@ -49,7 +49,7 @@ public class Presentation {
         if (transitioning)
             return;
 
-        if (current == null || !current.hasResponse(goalSlide))
+        if (current == null || goalSlide.equals(IGNORE_NAME) || !current.hasResponse(goalSlide))
             return;
 
         transitioning = true;

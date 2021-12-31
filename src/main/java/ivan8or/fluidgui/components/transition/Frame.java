@@ -22,18 +22,21 @@ public class Frame {
         if (key == null)
             throw new NullPointerException("key is null!");
 
-        ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta != null) {
-
-            // set the item's id to its persistent metadata for later retrieval
-            itemMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, goalSlide);
-            item.setItemMeta(itemMeta);
-        }
 
         this.item = item;
         this.slot = slot;
         this.goalSlide = goalSlide;
         this.delay = delay;
+
+
+        ItemMeta itemMeta = item.getItemMeta();
+        if (itemMeta == null)
+            return;
+
+        // set the item's id to its persistent metadata for later retrieval
+        itemMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, goalSlide);
+        item.setItemMeta(itemMeta);
+
     }
 
     public Frame(Frame other) {
@@ -46,13 +49,16 @@ public class Frame {
     public int getDelay() {
         return delay;
     }
+
     public String getID() {
         return goalSlide;
     }
+
     public void draw(Inventory inv) {
         inv.setItem(slot, item);
     }
+
     public String toString() {
-        return item.getType().toString();
+        return item.getType().name()+" to slot "+slot+"\t (points to "+goalSlide+")"+";\tdelay "+delay;
     }
 }
