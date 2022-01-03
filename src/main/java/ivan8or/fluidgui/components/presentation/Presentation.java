@@ -13,7 +13,6 @@ public class Presentation {
 
     public final String HEAD_NAME = "__head__";
     public final String INIT_ITEM_ID = "init";
-
     private final Plugin plugin;
 
     private final Map<String, Slide> slides;
@@ -50,6 +49,7 @@ public class Presentation {
         if (transitioning)
             return;
 
+        if (current == null || !current.hasResponse(itemID))
         if (current == null || !current.hasResponse(itemID))
             return;
 
