@@ -1,5 +1,6 @@
 package ivan8or.fluidgui.components.transition;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 
@@ -23,24 +24,32 @@ public class Transition {
     private final List<Frame> constantFrames;
 
     // an animator to produce on-the-spot dynamic frames for the transition
-    private final TransitionAnimator compiler;
+    private TransitionAnimator compiler;
 
     // a runnable action which this transition calls when it is invoked
-    protected TransitionAction<Void> task;
+    private TransitionAction task;
 
     // create a new transition for a slide, with no task to run and with no dynamic frames
-    public Transition(String slide_id_into, List<Frame> frames) {
-        this.targetSlideName = slide_id_into;
+    public Transition(String slideInto, List<Frame> frames) {
+        this.targetSlideName = slideInto;
         this.constantFrames = frames;
         this.compiler = new TransitionAnimator();
     }
 
     // create a new transition for a slide, with a parameter for a task tor un and for dynamic frames
-    public Transition(String slide_id_into, List<Frame> frames, TransitionAction<Void> task, TransitionAnimator compiler) {
-        this.targetSlideName = slide_id_into;
+    public Transition(String slideInto, List<Frame> frames, TransitionAction task, TransitionAnimator compiler) {
+        this.targetSlideName = slideInto;
         this.constantFrames = frames;
         this.task = task;
         this.compiler = Objects.requireNonNullElseGet(compiler, TransitionAnimator::new);
+    }
+
+    public void setAnimator(TransitionAnimator newAnimator) {
+        compiler = newAnimator;
+    }
+
+    public void setAction(TransitionAction newAction) {
+        task = newAction;
     }
 
     // run the task associated with this transition (sync or async)
