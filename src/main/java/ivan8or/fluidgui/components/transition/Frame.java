@@ -36,7 +36,6 @@ public class Frame {
         // set the item's id to its persistent metadata for later retrieval
         itemMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING, itemID);
         item.setItemMeta(itemMeta);
-
     }
 
     public Frame(Frame other) {

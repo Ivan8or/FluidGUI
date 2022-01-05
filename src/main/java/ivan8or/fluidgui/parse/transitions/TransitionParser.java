@@ -6,6 +6,7 @@ import ivan8or.fluidgui.components.transition.Frame;
 import ivan8or.fluidgui.components.transition.Transition;
 import ivan8or.fluidgui.parse.Parser;
 import ivan8or.fluidgui.parse.aliases.AliasParser;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -132,6 +133,7 @@ public class TransitionParser extends Parser {
                 (int) contents.getOrDefault("count", 1)));
 
         String itemName = (String) contents.getOrDefault("displayname", null);
+        itemName = ChatColor.translateAlternateColorCodes('&', itemName);
 
         ItemStack item = new ItemStack(itemMaterial, itemCount);
         ItemMeta meta = item.getItemMeta();
