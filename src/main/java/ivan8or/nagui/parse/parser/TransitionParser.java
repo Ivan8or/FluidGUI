@@ -32,6 +32,9 @@ public class TransitionParser extends Parser {
 
     @Override
     public void parse(Map<String, Object> root) {
+        if(root == null)
+            return;
+
         if(!root.containsKey("transitions"))
             return;
         Map<String, Object> transitionsList = (Map<String, Object>) root.get("transitions");

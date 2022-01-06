@@ -38,6 +38,8 @@ public class MenuBuilder extends Parser {
 
     @Override
     public void parse(Map<String, Object> root) {
+        if(root == null)
+            return;
         String yamlText = yaml.dump(root);
         yamlsToParse.add(yamlText);
     }
