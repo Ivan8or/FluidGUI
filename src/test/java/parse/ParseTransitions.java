@@ -1,7 +1,7 @@
 package parse;
 
-import ivan8or.fluidgui.parse.aliases.AliasParser;
-import ivan8or.fluidgui.parse.transitions.TransitionParser;
+import ivan8or.fluidgui.parse.parser.AliasParser;
+import ivan8or.fluidgui.parse.parser.TransitionParser;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -49,6 +49,6 @@ public class ParseTransitions {
 
         ap.parseFile(new File("C:\\Users\\ivant\\IdeaProjects\\FluidGUI\\src\\test\\resources\\menu\\aliases.yml"));
 
-        Assert.assertTrue(ap.getAliasNames().contains("cleartomain"));
+        Assert.assertTrue(ap.getTransitionAliasNames().contains("cleartomain"));
     }
 }

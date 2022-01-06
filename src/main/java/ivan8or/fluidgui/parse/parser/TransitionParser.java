@@ -1,11 +1,9 @@
-package ivan8or.fluidgui.parse.transitions;
+package ivan8or.fluidgui.parse.parser;
 
 import ivan8or.fluidgui.components.presentation.Presentation;
 import ivan8or.fluidgui.components.presentation.Slide;
 import ivan8or.fluidgui.components.transition.Frame;
 import ivan8or.fluidgui.components.transition.Transition;
-import ivan8or.fluidgui.parse.Parser;
-import ivan8or.fluidgui.parse.aliases.AliasParser;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -98,15 +96,13 @@ public class TransitionParser extends Parser {
 
     public static List<Frame> parseTransitionComponent(Map<String, Object> yamlComponent, AliasParser aliases, NamespacedKey key) {
         List<Frame> singleComponent = new ArrayList<>();
-        Map<String, Object> contents = (Map<String, Object>) yamlComponent.get("contents");
-
         switch ((String) yamlComponent.get("type")) {
             case "item":
-                Frame nextFrame = parseSingleFrame(contents, key);
+                Frame nextFrame = parseSingleFrame(yamlComponent, key);
                 singleComponent.add(nextFrame);
                 break;
             case "alias":
-                List<Frame> aliasFrames = parseAliasedFrames(contents, aliases);
+                List<Frame> aliasFrames = parseAliasedFrames(yamlComponent, aliases);
                 singleComponent.addAll(aliasFrames);
                 break;
             default:
@@ -117,9 +113,9 @@ public class TransitionParser extends Parser {
 
     public static List<Frame> parseAliasedFrames(Map<String, Object> contents, AliasParser aliases) {
         String aliasName = (String) contents.get("alias");
-        List<Frame> aliasedFrames = aliases.getAlias(aliasName);
+        List<Frame> aliasedFrames = aliases.getTransitionAlias(aliasName);
         if(aliasedFrames == null) {
-            throw new IllegalStateException("Required alias was not loaded!");
+            throw new IllegalStateException("Required alias '"+aliasName+"' has not been loaded!");
         }
         return aliasedFrames;
     }
@@ -132,12 +128,12 @@ public class TransitionParser extends Parser {
         int itemCount = Math.max(1, Math.min(64,
                 (int) contents.getOrDefault("count", 1)));
 
-        String itemName = (String) contents.getOrDefault("displayname", null);
-        itemName = ChatColor.translateAlternateColorCodes('&', itemName);
-
         ItemStack item = new ItemStack(itemMaterial, itemCount);
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
+
+            String itemName = (String) contents.getOrDefault("displayname", itemMaterial.name());
+            itemName = ChatColor.translateAlternateColorCodes('&', "&f"+itemName);
             meta.setDisplayName(itemName);
             item.setItemMeta(meta);
         }

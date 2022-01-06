@@ -1,34 +1,47 @@
-package ivan8or.fluidgui.parse.aliases;
+package ivan8or.fluidgui.parse.parser;
 
 import ivan8or.fluidgui.components.transition.Frame;
-import ivan8or.fluidgui.parse.Parser;
-import ivan8or.fluidgui.parse.transitions.TransitionParser;
+import ivan8or.fluidgui.parse.aliases.QueuedAlias;
+import ivan8or.fluidgui.parse.items.ItemAlias;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
 public class AliasParser extends Parser {
+
     final private Map<String, List<Frame>> transitionAliases;
+    final private Map<String, ItemAlias> itemAliases;
 
     // key is the required alias, value is all queued aliases that depend on it
-    final private Map<String, Set<QueuedTransitionAlias>> queuedTransitionAliases;
+    final private Map<String, Set<QueuedAlias>> queuedTransitionAliases;
+    final private Map<String, Set<QueuedAlias>> queuedItemAliases;
 
     final private Plugin plugin;
     final private NamespacedKey key;
 
     public AliasParser(Plugin plugin, NamespacedKey key) {
         this.transitionAliases = new HashMap<>();
+        this.itemAliases = new HashMap<>();
+
         this.queuedTransitionAliases = new HashMap<>();
+        this.queuedItemAliases = new HashMap<>();
         this.plugin = plugin;
         this.key = key;
     }
 
-    public List<Frame> getAlias(String name) {
+    public ItemAlias getItemAlias(String name) {
+        return itemAliases.get(name);
+    }
+    public Set<String> getItemAliasNames() {
+        return itemAliases.keySet();
+    }
+
+    public List<Frame> getTransitionAlias(String name) {
         return transitionAliases.get(name);
     }
 
-    public Set<String> getAliasNames() {
+    public Set<String> getTransitionAliasNames() {
         return transitionAliases.keySet();
     }
 
@@ -55,12 +68,12 @@ public class AliasParser extends Parser {
     private void loadTransitionAlias(String aliasName, List<Map<String, Object>> components) {
         Set<String> neededDependencies = TransitionParser.getTransitionDependencies(components);
         neededDependencies.removeAll(transitionAliases.keySet());
-        QueuedTransitionAlias queuedAlias = new QueuedTransitionAlias(aliasName, components, neededDependencies);
+        QueuedAlias queuedAlias = new QueuedAlias(aliasName, components, neededDependencies);
         loadTransitionAlias(queuedAlias);
     }
 
 
-    private void loadTransitionAlias(QueuedTransitionAlias queuedAlias) {
+    private void loadTransitionAlias(QueuedAlias queuedAlias) {
 
         String aliasName = queuedAlias.getAliasName();
         if(transitionAliases.containsKey(aliasName))
@@ -73,7 +86,7 @@ public class AliasParser extends Parser {
                     key);
             transitionAliases.put(aliasName, cumulativeFrames);
 
-            for(QueuedTransitionAlias otherQueued: queuedTransitionAliases.getOrDefault(
+            for(QueuedAlias otherQueued: queuedTransitionAliases.getOrDefault(
                     aliasName,
                     new HashSet<>())) {
                 otherQueued.removeNeeded(aliasName);
@@ -82,7 +95,7 @@ public class AliasParser extends Parser {
         }
         else {
             for(String dependency: queuedAlias.neededDependencies()) {
-                Set<QueuedTransitionAlias> queuedAliases = queuedTransitionAliases.getOrDefault(
+                Set<QueuedAlias> queuedAliases = queuedTransitionAliases.getOrDefault(
                         dependency,
                         new HashSet<>());
                 queuedAliases.add(queuedAlias);

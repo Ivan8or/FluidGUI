@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class QueuedTransitionAlias {
+public class QueuedAlias {
 
     final private String aliasName;
     final private List<Map<String, Object>> components;
 
     final private Set<String> neededDependencies;
 
-    public QueuedTransitionAlias(String name, List<Map<String, Object>> components, Set<String> neededAliases) {
+    public QueuedAlias(String name, List<Map<String, Object>> components, Set<String> neededAliases) {
         this.aliasName = name;
         this.components = components;
         neededDependencies = neededAliases;
@@ -24,9 +24,11 @@ public class QueuedTransitionAlias {
     public List<Map<String, Object>> getComponents() {
         return components;
     }
+
     public String getAliasName() {
         return aliasName;
     }
+
     public Set<String> neededDependencies() {
         return neededDependencies;
     }
