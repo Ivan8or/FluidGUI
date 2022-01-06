@@ -1,4 +1,4 @@
-package ivan8or.fluidgui.components.transition;
+package ivan8or.nagui.components.transition;
 
 import java.util.Map;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package ivan8or.fluidgui.components.presentation;
+package ivan8or.nagui.components.presentation;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

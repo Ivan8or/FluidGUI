@@ -1,6 +1,5 @@
-package ivan8or.fluidgui.components.transition;
+package ivan8or.nagui.components.transition;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 

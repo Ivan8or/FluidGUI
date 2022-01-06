@@ -1,9 +1,9 @@
-package ivan8or.fluidgui.parse.parser;
+package ivan8or.nagui.parse.parser;
 
-import ivan8or.fluidgui.parse.depend.LoadedDependency;
-import ivan8or.fluidgui.parse.depend.QueuedDependency;
-import ivan8or.fluidgui.parse.depend.DependencyID;
-import ivan8or.fluidgui.parse.depend.DependencyType;
+import ivan8or.nagui.parse.depend.LoadedDependency;
+import ivan8or.nagui.parse.depend.QueuedDependency;
+import ivan8or.nagui.parse.depend.DependencyID;
+import ivan8or.nagui.parse.depend.DependencyType;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
 

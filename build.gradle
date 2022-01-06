@@ -6,7 +6,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
-group = 'ivan8or.fluidgui'
+group = 'ivan8or.nagui'
 version = '0.3.2'
 
 sourceCompatibility = '1.8'
@@ -14,8 +14,9 @@ targetCompatibility = '1.8'
 
 repositories {
     mavenCentral()
-    maven {name = 'spigotmc-repo'
-url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    maven {
+    name = 'spigotmc-repo'
+    url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
 }
 maven {name = 'sonatype'
 url = 'https://oss.sonatype.org/content/groups/public/'

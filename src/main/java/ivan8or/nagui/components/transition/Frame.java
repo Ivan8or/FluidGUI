@@ -1,4 +1,4 @@
-package ivan8or.fluidgui.components.transition;
+package ivan8or.nagui.components.transition;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;

@@ -1,6 +1,6 @@
-package ivan8or.fluidgui.components.presentation;
+package ivan8or.nagui.components.presentation;
 
-import ivan8or.fluidgui.components.transition.Transition;
+import ivan8or.nagui.components.transition.Transition;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 

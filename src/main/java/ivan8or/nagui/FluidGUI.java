@@ -1,4 +1,4 @@
-package ivan8or.fluidgui;
+package ivan8or.nagui;
 
 public final class FluidGUI {
 

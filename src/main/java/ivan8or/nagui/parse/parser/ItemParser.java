@@ -1,8 +1,8 @@
-package ivan8or.fluidgui.parse.parser;
+package ivan8or.nagui.parse.parser;
 
-import ivan8or.fluidgui.parse.depend.DependencyID;
-import ivan8or.fluidgui.parse.depend.DependencyType;
-import ivan8or.fluidgui.parse.depend.ItemAlias;
+import ivan8or.nagui.parse.depend.DependencyID;
+import ivan8or.nagui.parse.depend.DependencyType;
+import ivan8or.nagui.parse.depend.ItemAlias;
 import org.bukkit.Material;
 
 import java.util.List;

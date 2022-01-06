@@ -1,4 +1,4 @@
-package ivan8or.fluidgui.parse.parser;
+package ivan8or.nagui.parse.parser;
 
 import org.yaml.snakeyaml.Yaml;
 

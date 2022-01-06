@@ -1,11 +1,10 @@
-package ivan8or.fluidgui.parse.depend;
+package ivan8or.nagui.parse.depend;
 
-import ivan8or.fluidgui.parse.parser.AliasParser;
-import ivan8or.fluidgui.parse.parser.ItemParser;
-import ivan8or.fluidgui.parse.parser.TransitionParser;
+import ivan8or.nagui.parse.parser.AliasParser;
+import ivan8or.nagui.parse.parser.ItemParser;
+import ivan8or.nagui.parse.parser.TransitionParser;
 
 import java.util.*;
-import java.util.logging.Level;
 
 public class QueuedDependency {
 

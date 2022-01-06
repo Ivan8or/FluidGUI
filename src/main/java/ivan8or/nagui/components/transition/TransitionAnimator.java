@@ -1,4 +1,4 @@
-package ivan8or.fluidgui.components.transition;
+package ivan8or.nagui.components.transition;
 
 import java.util.ArrayList;
 import java.util.List;

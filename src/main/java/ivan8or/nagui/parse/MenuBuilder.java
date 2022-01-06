@@ -1,10 +1,10 @@
-package ivan8or.fluidgui.parse;
+package ivan8or.nagui.parse;
 
-import ivan8or.fluidgui.components.presentation.Presentation;
-import ivan8or.fluidgui.components.presentation.Slide;
-import ivan8or.fluidgui.parse.parser.AliasParser;
-import ivan8or.fluidgui.parse.parser.Parser;
-import ivan8or.fluidgui.parse.parser.TransitionParser;
+import ivan8or.nagui.components.presentation.Presentation;
+import ivan8or.nagui.components.presentation.Slide;
+import ivan8or.nagui.parse.parser.AliasParser;
+import ivan8or.nagui.parse.parser.Parser;
+import ivan8or.nagui.parse.parser.TransitionParser;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
 

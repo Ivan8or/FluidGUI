@@ -1,4 +1,4 @@
-package ivan8or.fluidgui.parse.depend;
+package ivan8or.nagui.parse.depend;
 
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,0 @@
-name: FluidGUI
-version: @version@
-main: ivan8or.fluidgui.FluidGUI
-api-version: 1.18

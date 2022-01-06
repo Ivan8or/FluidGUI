@@ -1,8 +1,7 @@
-package ivan8or.fluidgui.parse.depend;
+package ivan8or.nagui.parse.depend;
 
-import ivan8or.fluidgui.components.transition.Frame;
+import ivan8or.nagui.components.transition.Frame;
 
-import java.util.HashSet;
 import java.util.List;
 
 public class LoadedDependency {

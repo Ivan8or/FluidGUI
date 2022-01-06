@@ -1,4 +1,4 @@
-package ivan8or.fluidgui.parse.depend;
+package ivan8or.nagui.parse.depend;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -80,7 +80,6 @@ public class ItemAlias {
 
         int finalAmount = Math.max(1, Math.min(64, amount.orElse(defaultAmount)));
         boolean finalGlowing = glowing.orElse(defaultGlowing);
-
 
         ItemStack newItem = new ItemStack(finalMaterial, finalAmount);
         ItemMeta meta = newItem.getItemMeta();

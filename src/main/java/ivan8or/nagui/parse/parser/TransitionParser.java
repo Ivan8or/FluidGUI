@@ -1,17 +1,13 @@
-package ivan8or.fluidgui.parse.parser;
+package ivan8or.nagui.parse.parser;
 
-import ivan8or.fluidgui.components.presentation.Presentation;
-import ivan8or.fluidgui.components.presentation.Slide;
-import ivan8or.fluidgui.components.transition.Frame;
-import ivan8or.fluidgui.components.transition.Transition;
-import ivan8or.fluidgui.parse.depend.DependencyID;
-import ivan8or.fluidgui.parse.depend.DependencyType;
-import ivan8or.fluidgui.parse.depend.ItemAlias;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import ivan8or.nagui.components.presentation.Presentation;
+import ivan8or.nagui.components.presentation.Slide;
+import ivan8or.nagui.components.transition.Frame;
+import ivan8or.nagui.components.transition.Transition;
+import ivan8or.nagui.parse.depend.DependencyID;
+import ivan8or.nagui.parse.depend.DependencyType;
+import ivan8or.nagui.parse.depend.ItemAlias;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
