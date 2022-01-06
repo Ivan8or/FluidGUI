@@ -5,6 +5,7 @@ import ivan8or.fluidgui.parse.parser.ItemParser;
 import ivan8or.fluidgui.parse.parser.TransitionParser;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public class QueuedDependency {
 
@@ -14,23 +15,26 @@ public class QueuedDependency {
     final private Set<DependencyID> unloadedDependencies;
 
     public QueuedDependency(DependencyType type, String name, Object source, AliasParser aliases) {
-        this.unloadedDependencies = calculateNeededDependencies(aliases);
         this.did = new DependencyID(type, name);
         this.source = source;
+        this.unloadedDependencies = calculateNeededDependencies(aliases);
     }
 
     public QueuedDependency(DependencyID did, Object source, AliasParser aliases) {
-        this.unloadedDependencies = calculateNeededDependencies(aliases);
         this.did = did;
         this.source = source;
+        this.unloadedDependencies = calculateNeededDependencies(aliases);
     }
 
 
     public LoadedDependency load(AliasParser aliases) {
-        return switch (did.getType()) {
-            case TRANSITION -> loadAsTransitionAlias(aliases);
-            case ITEM -> loadAsItemAlias(aliases);
+        switch (did.getType()) {
+            case TRANSITION:
+                return loadAsTransitionAlias(aliases);
+            case ITEM:
+                return loadAsItemAlias(aliases);
         };
+        return null;
     }
 
     private LoadedDependency loadAsItemAlias(AliasParser aliases) {
@@ -62,8 +66,10 @@ public class QueuedDependency {
         switch (did.getType()) {
             case TRANSITION:
                 dependencies.addAll(TransitionParser.getTransitionDependencies((List<Map<String, Object>>) source));
+                break;
             case ITEM:
                 ItemParser.getItemDependency((Map<String, Object>) source).ifPresent(dependencies::add);
+                break;
         }
         dependencies.removeAll(aliases.allLoaded());
         return dependencies;

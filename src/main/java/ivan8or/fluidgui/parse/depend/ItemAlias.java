@@ -59,7 +59,11 @@ public class ItemAlias {
         this.glowing = Optional.of(newGlowing);
     }
 
-
+    public String toString() {
+        return "mat: "+material.orElse(defaultMaterial).name()+
+                ", name: "+name.orElse("default")+
+                ", amount: "+amount.orElse(1);
+    }
 
     public ItemStack build() {
 
