@@ -42,6 +42,10 @@ public class AliasParser extends Parser {
     }
 
     public void parse(Map<String, Object> root) {
+
+        if(root == null)
+            return;
+
         if (!root.containsKey("aliases"))
             return;
         Map<String, Object> aliasList = (Map<String, Object>) root.get("aliases");
