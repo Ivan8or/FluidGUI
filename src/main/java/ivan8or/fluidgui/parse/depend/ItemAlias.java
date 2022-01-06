@@ -9,6 +9,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ItemAlias {
 
@@ -72,6 +73,11 @@ public class ItemAlias {
                 '&', "&f" + name.orElse(finalMaterial.name()));
 
         List<String> finalLore = lore.orElse(defaultLore);
+        if(finalLore != null)
+            finalLore = finalLore.stream()
+                    .map(i -> ChatColor.translateAlternateColorCodes('&',"&7"+i))
+                    .collect(Collectors.toList());
+
         int finalAmount = Math.max(1, Math.min(64, amount.orElse(defaultAmount)));
         boolean finalGlowing = glowing.orElse(defaultGlowing);
 
