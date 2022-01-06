@@ -1,4 +1,4 @@
-package ivan8or.fluidgui.parse.items;
+package ivan8or.fluidgui.parse.depend;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

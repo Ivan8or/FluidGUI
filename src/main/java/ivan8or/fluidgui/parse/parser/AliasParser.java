@@ -1,48 +1,44 @@
 package ivan8or.fluidgui.parse.parser;
 
-import ivan8or.fluidgui.components.transition.Frame;
-import ivan8or.fluidgui.parse.aliases.QueuedAlias;
-import ivan8or.fluidgui.parse.items.ItemAlias;
+import ivan8or.fluidgui.parse.depend.LoadedDependency;
+import ivan8or.fluidgui.parse.depend.QueuedDependency;
+import ivan8or.fluidgui.parse.depend.DependencyID;
+import ivan8or.fluidgui.parse.depend.DependencyType;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public class AliasParser extends Parser {
 
-    final private Map<String, List<Frame>> transitionAliases;
-    final private Map<String, ItemAlias> itemAliases;
+    final private Map<DependencyID, LoadedDependency> loadedDependencies;
 
-    // key is the required alias, value is all queued aliases that depend on it
-    final private Map<String, Set<QueuedAlias>> queuedTransitionAliases;
-    final private Map<String, Set<QueuedAlias>> queuedItemAliases;
+    // key is some yet to be loaded depends, value is all queued depends that require it
+    final private Map<DependencyID, Set<QueuedDependency>> queuedDependencies;
 
     final private Plugin plugin;
     final private NamespacedKey key;
 
     public AliasParser(Plugin plugin, NamespacedKey key) {
-        this.transitionAliases = new HashMap<>();
-        this.itemAliases = new HashMap<>();
-
-        this.queuedTransitionAliases = new HashMap<>();
-        this.queuedItemAliases = new HashMap<>();
+        this.loadedDependencies = new HashMap<>();
+        this.queuedDependencies = new HashMap<>();
         this.plugin = plugin;
         this.key = key;
     }
 
-    public ItemAlias getItemAlias(String name) {
-        return itemAliases.get(name);
+    public LoadedDependency getDependency(DependencyType type, String name) {
+        return getDependency(new DependencyID(type, name));
     }
-    public Set<String> getItemAliasNames() {
-        return itemAliases.keySet();
-    }
-
-    public List<Frame> getTransitionAlias(String name) {
-        return transitionAliases.get(name);
+    public LoadedDependency getDependency(DependencyID id) {
+        return loadedDependencies.get(id);
     }
 
-    public Set<String> getTransitionAliasNames() {
-        return transitionAliases.keySet();
+    public Set<DependencyID> allLoaded() {
+        return loadedDependencies.keySet();
+    }
+    public NamespacedKey getKey() {
+        return key;
     }
 
     public void parse(Map<String, Object> root) {
@@ -50,56 +46,62 @@ public class AliasParser extends Parser {
             return;
         Map<String, Object> aliasList = (Map<String, Object>) root.get("aliases");
 
+        if (aliasList.containsKey("items")) {
+            Map<String, Object> transitionsList = (Map<String, Object>) aliasList.get("items");
+            addAliasesOfType(transitionsList, DependencyType.ITEM);
+        }
+
         if (aliasList.containsKey("transitions")) {
             Map<String, Object> transitionsList = (Map<String, Object>) aliasList.get("transitions");
-            addAllTransitionAliases(transitionsList);
+            addAliasesOfType(transitionsList, DependencyType.TRANSITION);
         }
     }
 
-    private void addAllTransitionAliases(Map<String, Object> transitionsList) {
-        Set<String> aliasesToAdd = transitionsList.keySet();
 
-        for (String aliasName : aliasesToAdd) {
-            List<Map<String, Object>> components = (List<Map<String, Object>>) transitionsList.get(aliasName);
-            loadTransitionAlias(aliasName, components);
+    private void addAliasesOfType(Map<String, Object> itemsList, DependencyType type) {
+        Set<String> aliasNames = itemsList.keySet();
+
+        for (String name: aliasNames) {
+            Object body = itemsList.get(name);
+            QueuedDependency currentAlias = new QueuedDependency(type, name,  body, this);
+            loadDependency(currentAlias);
         }
     }
 
-    private void loadTransitionAlias(String aliasName, List<Map<String, Object>> components) {
-        Set<String> neededDependencies = TransitionParser.getTransitionDependencies(components);
-        neededDependencies.removeAll(transitionAliases.keySet());
-        QueuedAlias queuedAlias = new QueuedAlias(aliasName, components, neededDependencies);
-        loadTransitionAlias(queuedAlias);
-    }
+    private void loadDependency(QueuedDependency toLoad) {
 
-
-    private void loadTransitionAlias(QueuedAlias queuedAlias) {
-
-        String aliasName = queuedAlias.getAliasName();
-        if(transitionAliases.containsKey(aliasName))
+        DependencyID aliasID = toLoad.getID();
+        if(loadedDependencies.containsKey(aliasID)) {
+            plugin.getLogger().log(Level.SEVERE, "duplicate dependency found! "+aliasID);
             return;
-
-        if(queuedAlias.canBeLoaded()) {
-            List<Frame> cumulativeFrames = TransitionParser.accumulateTransition(
-                    queuedAlias.getComponents(),
-                    this,
-                    key);
-            transitionAliases.put(aliasName, cumulativeFrames);
-
-            for(QueuedAlias otherQueued: queuedTransitionAliases.getOrDefault(
-                    aliasName,
-                    new HashSet<>())) {
-                otherQueued.removeNeeded(aliasName);
-                loadTransitionAlias(otherQueued);
-            }
         }
+
+        // remove itself from all dependent items and attempt to load them
+        if(toLoad.isLoadable()) {
+            LoadedDependency loadedDependency = toLoad.load(this);
+            loadedDependencies.put(aliasID, loadedDependency);
+
+            Set<QueuedDependency> dependents = queuedDependencies.get(aliasID);
+            if(dependents == null)
+                dependents = new HashSet<>();
+
+            for(QueuedDependency otherQueued: dependents) {
+                otherQueued.checkOff(aliasID);
+                if(otherQueued.isLoadable())
+                    loadDependency(otherQueued);
+            }
+            queuedDependencies.remove(aliasID);
+        }
+
+        // add itself as a dependent to all items which are required to load this
         else {
-            for(String dependency: queuedAlias.neededDependencies()) {
-                Set<QueuedAlias> queuedAliases = queuedTransitionAliases.getOrDefault(
-                        dependency,
-                        new HashSet<>());
-                queuedAliases.add(queuedAlias);
-                queuedTransitionAliases.put(dependency, queuedAliases);
+            for(DependencyID desiredDependency: toLoad.getUnloadedDependencies()) {
+
+                Set<QueuedDependency> queueForDesired = queuedDependencies.getOrDefault(
+                        desiredDependency, new HashSet<>());
+
+                queueForDesired.add(toLoad);
+                queuedDependencies.put(desiredDependency, queueForDesired);
             }
         }
     }

@@ -4,6 +4,9 @@ import ivan8or.fluidgui.components.presentation.Presentation;
 import ivan8or.fluidgui.components.presentation.Slide;
 import ivan8or.fluidgui.components.transition.Frame;
 import ivan8or.fluidgui.components.transition.Transition;
+import ivan8or.fluidgui.parse.depend.DependencyID;
+import ivan8or.fluidgui.parse.depend.DependencyType;
+import ivan8or.fluidgui.parse.depend.ItemAlias;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -62,24 +65,28 @@ public class TransitionParser extends Parser {
     }
 
     // gets all aliases a transition uses (if any)
-    public static Set<String> getTransitionDependencies(List<Map<String, Object>> transition) {
-        Set<String> requiredAliases = new HashSet<>();
+    public static Set<DependencyID> getTransitionDependencies(List<Map<String, Object>> transition) {
+        Set<DependencyID> requiredAliases = new HashSet<>();
 
         for (Map<String, Object> yamlComponent : transition) {
-            Optional<String> componentDependencies = getComponentDependency(yamlComponent);
+            Optional<DependencyID> componentDependencies = getComponentDependency(yamlComponent);
             componentDependencies.ifPresent(requiredAliases::add);
         }
         return requiredAliases;
     }
 
     // gets the dependency a component uses (if any)
-    public static Optional<String> getComponentDependency(Map<String, Object> yamlComponent) {
+    public static Optional<DependencyID> getComponentDependency(Map<String, Object> yamlComponent) {
 
-        if(!yamlComponent.get("type").equals("alias"))
-            return Optional.empty();
+        if(yamlComponent.get("type").equals("alias")) {
+            DependencyID did = new DependencyID(DependencyType.TRANSITION, (String) yamlComponent.get("alias"));
+            return Optional.of(did);
+        }
 
-        Map<String, Object> contents = (Map<String, Object>) yamlComponent.get("contents");
-        return Optional.of((String) contents.get("alias"));
+        if(yamlComponent.get("type").equals("item")) {
+            return ItemParser.getItemDependency(yamlComponent);
+        }
+        return Optional.empty();
     }
 
 
@@ -98,11 +105,11 @@ public class TransitionParser extends Parser {
         List<Frame> singleComponent = new ArrayList<>();
         switch ((String) yamlComponent.get("type")) {
             case "item":
-                Frame nextFrame = parseSingleFrame(yamlComponent, key);
+                Frame nextFrame = parseSingleItemComponent(yamlComponent, aliases, key);
                 singleComponent.add(nextFrame);
                 break;
             case "alias":
-                List<Frame> aliasFrames = parseAliasedFrames(yamlComponent, aliases);
+                List<Frame> aliasFrames = parseAliasedComponent(yamlComponent, aliases);
                 singleComponent.addAll(aliasFrames);
                 break;
             default:
@@ -111,39 +118,28 @@ public class TransitionParser extends Parser {
         return singleComponent;
     }
 
-    public static List<Frame> parseAliasedFrames(Map<String, Object> contents, AliasParser aliases) {
+    public static List<Frame> parseAliasedComponent(Map<String, Object> contents, AliasParser aliases) {
         String aliasName = (String) contents.get("alias");
-        List<Frame> aliasedFrames = aliases.getTransitionAlias(aliasName);
+        List<Frame> aliasedFrames = aliases
+                .getDependency(DependencyType.TRANSITION, aliasName)
+                .asTransitionAlias();
         if(aliasedFrames == null) {
             throw new IllegalStateException("Required alias '"+aliasName+"' has not been loaded!");
         }
         return aliasedFrames;
     }
 
-    public static Frame parseSingleFrame(Map<String, Object> contents, NamespacedKey key) {
+    public static Frame parseSingleItemComponent(Map<String, Object> contents, AliasParser aliases, NamespacedKey key) {
 
-        Material itemMaterial = Material.valueOf(
-                (String) contents.getOrDefault("material", Material.STONE.name()));
-
-        int itemCount = Math.max(1, Math.min(64,
-                (int) contents.getOrDefault("count", 1)));
-
-        ItemStack item = new ItemStack(itemMaterial, itemCount);
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-
-            String itemName = (String) contents.getOrDefault("displayname", itemMaterial.name());
-            itemName = ChatColor.translateAlternateColorCodes('&', "&f"+itemName);
-            meta.setDisplayName(itemName);
-            item.setItemMeta(meta);
-        }
+        Map<String, Object> itemData = (Map<String, Object>) contents.getOrDefault("item", new HashMap<>());
+        ItemAlias item = ItemParser.parseItem(itemData, aliases);
 
         int frameSlot = (int) contents.getOrDefault("slot", 1);
         int frameDelay = (int) contents.getOrDefault("delay", 0);
         String frameID = (String) contents.getOrDefault("id", Presentation.EMPTY_ID);
 
         Frame frame = new Frame(
-                item,
+                item.build(),
                 frameSlot,
                 frameID,
                 frameDelay,
