@@ -80,7 +80,7 @@ public class TransitionParser extends Parser {
         }
 
         if(yamlComponent.get("type").equals("item")) {
-            return ItemParser.getItemDependency(yamlComponent);
+            return ItemParser.getItemDependency((Map<String, Object>) yamlComponent.get("item"));
         }
         return Optional.empty();
     }

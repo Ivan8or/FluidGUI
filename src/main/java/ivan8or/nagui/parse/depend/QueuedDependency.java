@@ -70,6 +70,13 @@ public class QueuedDependency {
                 ItemParser.getItemDependency((Map<String, Object>) source).ifPresent(dependencies::add);
                 break;
         }
+
+        System.err.println(did+" depends on:");
+        for(DependencyID d: dependencies) {
+            System.err.println("\t" + d);
+        }
+        System.err.println("(end)");
+
         dependencies.removeAll(aliases.allLoaded());
         return dependencies;
     }

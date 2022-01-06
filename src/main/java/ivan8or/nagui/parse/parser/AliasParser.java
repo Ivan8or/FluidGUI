@@ -75,7 +75,12 @@ public class AliasParser extends Parser {
             plugin.getLogger().log(Level.SEVERE, "duplicate dependency found! "+aliasID);
             return;
         }
-
+        plugin.getLogger().log(Level.INFO, "loading dependency "+aliasID);
+        plugin.getLogger().log(Level.INFO, "still waiting on: ");
+        for(DependencyID waitingOn : toLoad.getUnloadedDependencies()) {
+            plugin.getLogger().log(Level.INFO, "\t"+waitingOn);
+        }
+        plugin.getLogger().log(Level.INFO, "(end)");
         // remove itself from all dependent items and attempt to load them
         if(toLoad.isLoadable()) {
             LoadedDependency loadedDependency = toLoad.load(this);
