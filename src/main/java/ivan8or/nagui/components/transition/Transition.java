@@ -82,7 +82,7 @@ public class Transition {
 
         // display the dynamic frames after the constant frames run out
         new TransitionRunner(dynamicFrames.get(), inv, useDelay)
-                .runTaskTimer(plugin, constantsDelay, 1);
+                .runTaskTimer(plugin, constantsDelay+1, 1);
 
         int dynamicsDelay = getDelay(dynamicFrames.get());
 

@@ -71,12 +71,6 @@ public class QueuedDependency {
                 break;
         }
 
-        System.err.println(did+" depends on:");
-        for(DependencyID d: dependencies) {
-            System.err.println("\t" + d);
-        }
-        System.err.println("(end)");
-
         dependencies.removeAll(aliases.allLoaded());
         return dependencies;
     }
